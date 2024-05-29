@@ -1,0 +1,19 @@
+package demo;
+
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import static io.restassured.RestAssured.*;
+
+public class ECommerceAPITest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		RequestSpecification req =new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").setContentType(ContentType.JSON).build();
+		given().spec(req).body(req)
+		
+
+	}
+
+}

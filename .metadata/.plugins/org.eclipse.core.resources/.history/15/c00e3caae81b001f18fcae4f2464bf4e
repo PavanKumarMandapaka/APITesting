@@ -1,0 +1,40 @@
+package demo;
+
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
+import pojo.LoginRequest;
+import pojo.LoginResponse;
+
+import static io.restassured.RestAssured.*;
+
+import java.io.File;
+
+public class ECommerceAPITest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method  
+		
+		RequestSpecification req =new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").setContentType(ContentType.JSON).build();
+		
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setUserEmail("pavan.kumar@gmail.com");
+		loginRequest.setUserPassword("Rithika@34");
+		
+		RequestSpecification reqLogin = given().log().all().spec(req).body(loginRequest);
+		LoginResponse loginResponse = reqLogin.when().post("/api/ecom/auth/login")
+		.then().log().all().extract().response().as(LoginResponse.class);
+		String authorizationToken = loginResponse.getToken();
+		String userId = loginResponse.getUserId();
+		
+		RequestSpecification addProductBaseReq =new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com").addHeader("Authorization",authorizationToken).build();
+		given().log().all().spec(addProductBaseReq)
+		.param("productName", "Elephant")
+		.param("productAddedBy", userId).param("productCategory", "fashion")
+		.param("productSubCategory", "shirts").param("productPrice", "11500")
+		.param("productDescription", "Lenova").param("productFor", "men")
+		.multiPart("productImage",new File("D:\\APITesting\\Elephant_Toy.jpeg"));
+
+	}
+
+}
